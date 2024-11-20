@@ -56,7 +56,11 @@ plot_type = right_column.radio("Choose Plot Type", plot_types)
 
 if st.sidebar.checkbox("Show Dataframe"):
     st.subheader("Feel free to explore it :)")
-    st.dataframe(data=df)
+    if country == "All":
+        reduced_df = df
+    else:
+        reduced_df = df[df["Country"] == country]
+    st.dataframe(data=reduced_df)
 
 if st.sidebar.checkbox("Amount of Volcanoes per Type"):
     st.subheader("Amount of Volcanoes per Type")
