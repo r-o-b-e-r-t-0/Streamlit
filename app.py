@@ -51,6 +51,9 @@ countries = ["All"]+sorted(pd.unique(df['Country']))
 left_column, right_column = st.columns(2)
 country = left_column.selectbox("Choose a country", countries)
 
+plot_types = ["Matplotlib", "Plotly"]
+plot_type = right_column.radio("Choose Plot Type", plot_types)
+
 if st.sidebar.checkbox("Show Dataframe"):
     st.subheader("Feel free to explore it :)")
     st.dataframe(data=df)
@@ -61,8 +64,6 @@ if st.sidebar.checkbox("Amount of Volcanoes per Type"):
         reduced_df = df
     else:
         reduced_df = df[df["Country"] == country]
-    plot_types = ["Matplotlib", "Plotly"]
-    plot_type = right_column.radio("Choose Plot Type", plot_types)
     if plot_type == "Matplotlib":
         type_counts = reduced_df['Type'].value_counts()
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -94,8 +95,6 @@ if st.sidebar.checkbox("Active & Inactive"):
         reduced_df = df
     else:
         reduced_df = df[df["Country"] == country]
-    plot_types = ["Matplotlib", "Plotly"]
-    plot_type = right_column.radio("Choose Plot Type", plot_types)
     active_inactive = reduced_df.groupby(['Country', 'Active State']).size().reset_index(name='Count')
     if plot_type == "Plotly":
         fig = px.bar(
@@ -111,23 +110,3 @@ if st.sidebar.checkbox("Active & Inactive"):
         ax.set_ylabel('Amount', fontsize=12)
         plt.xticks(rotation=45)
         st.pyplot(fig)
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
