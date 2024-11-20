@@ -12,6 +12,68 @@ def load_data(path):
     df = pd.read_csv(path)
     return df
 
+
+
+
+# YouTube video URL
+youtube_url = "https://www.youtube.com/embed/wV73vvp0QAk?autoplay=1&loop=1&mute=1&playlist=wV73vvp0QAk"
+
+# Inject custom CSS for background video with 50% opacity
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        position: relative;
+        height: 100%;
+    }}
+    
+    .stApp::before {{
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);  /* 50% opacity black overlay */
+        z-index: -1;
+    }}
+
+    .video-background {{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        iframe {{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }}
+        z-index: -2;
+    }}
+    </style>
+    """, 
+    unsafe_allow_html=True
+)
+
+# Embed the YouTube video with loop and mute parameters
+st.markdown(
+    f"""
+    <div class="video-background">
+        <iframe src="{youtube_url}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+    """, 
+    unsafe_allow_html=True
+)
+
+
+
+
+
+
+
+
+
 volcanoes_df_raw = load_data(path="./data/raw/volcano_ds_pop.csv")
 df = deepcopy(volcanoes_df_raw)
 df.drop(columns=["Unnamed: 0"], inplace=True)
