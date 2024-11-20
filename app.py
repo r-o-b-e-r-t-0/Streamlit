@@ -51,7 +51,7 @@ countries = ["All"]+sorted(pd.unique(df['Country']))
 left_column, right_column = st.columns(2)
 country = left_column.selectbox("Choose a country", countries)
 
-plot_types = ["Matplotlib", "Plotly"]
+plot_types = ["Pie", "Bar"]
 plot_type = right_column.radio("Choose Plot Type", plot_types)
 
 if st.sidebar.checkbox("Show Dataframe"):
@@ -68,13 +68,20 @@ if st.sidebar.checkbox("Amount of Volcanoes per Type"):
         reduced_df = df
     else:
         reduced_df = df[df["Country"] == country]
-    if plot_type == "Matplotlib":
-        type_counts = reduced_df['Type'].value_counts()
-        fig, ax = plt.subplots(figsize=(10, 6))
-        type_counts.plot(kind='bar', color='skyblue', ax=ax)
-        ax.set_xlabel('Type', fontsize=12)
-        ax.set_ylabel('Amount', fontsize=12)
-        st.pyplot(fig)
+    if plot_type == "Pie":
+        fig = px.pie(
+            reduced_df, 
+            names='Type', 
+            title='Volcano Types Distribution',
+            hole=0.3
+        )
+        st.plotly_chart(fig)
+        #type_counts = reduced_df['Type'].value_counts()
+        #fig, ax = plt.subplots(figsize=(10, 6))
+        #type_counts.plot(kind='bar', color='skyblue', ax=ax)
+        #ax.set_xlabel('Type', fontsize=12)
+        #ax.set_ylabel('Amount', fontsize=12)
+        #st.pyplot(fig)
     else:
         fig = px.bar(
             reduced_df['Type'].value_counts().reset_index(),
@@ -100,7 +107,7 @@ if st.sidebar.checkbox("Active & Inactive"):
     else:
         reduced_df = df[df["Country"] == country]
     active_inactive = reduced_df.groupby(['Country', 'Active State']).size().reset_index(name='Count')
-    if plot_type == "Plotly":
+    if plot_type == "Bar":
         fig = px.bar(
             active_inactive, x='Country', y='Count', color='Active State',
             labels={'Count': 'Amount', 'Country': 'Country', 'Active State': 'Active State'}
@@ -108,9 +115,17 @@ if st.sidebar.checkbox("Active & Inactive"):
         st.plotly_chart(fig)
     else:
         active_inactive_pivot = active_inactive.pivot(index='Country', columns='Active State', values='Count').fillna(0)
-        fig, ax = plt.subplots(figsize=(12, 6))
-        active_inactive_pivot.plot(kind='bar', stacked=True, color=['lightblue', 'orange'], ax=ax)
-        ax.set_xlabel('Country', fontsize=12)
-        ax.set_ylabel('Amount', fontsize=12)
-        plt.xticks(rotation=45)
-        st.pyplot(fig)
+        #fig, ax = plt.subplots(figsize=(12, 6))
+        #active_inactive_pivot.plot(kind='bar', stacked=True, color=['lightblue', 'orange'], ax=ax)
+        #ax.set_xlabel('Country', fontsize=12)
+        #ax.set_ylabel('Amount', fontsize=12)
+        #plt.xticks(rotation=45)
+        #st.pyplot(fig)
+        fig = px.pie(
+            active_inactive,
+            names='Active State',
+            values='Count',
+            title=f"Active & Inactive Volcanoes in {country if country != 'All' else 'All Countries'}",
+            hole=0.3  # Donut chart
+        )
+        st.plotly_chart(fig)
